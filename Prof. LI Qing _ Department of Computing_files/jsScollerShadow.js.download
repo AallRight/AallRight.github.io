@@ -1,0 +1,1 @@
+var jsScollerShadow={init:function(){$(".js-scroller-shadow").scroll(function(o){var s=$(this),l=$(this).parents(".js-scroller-shadow-container");s.scrollTop()<=5?l.addClass("at-top"):l.removeClass("at-top"),s.scrollTop()+s.innerHeight()<=s[0].scrollHeight-5?l.removeClass("at-bottom"):l.addClass("at-bottom")}).trigger("scroll")}};

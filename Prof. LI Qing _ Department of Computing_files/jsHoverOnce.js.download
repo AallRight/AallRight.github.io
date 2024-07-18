@@ -1,0 +1,1 @@
+var jsHoverOnce={init:function(){$(".js-hover-once").on("mouseenter",function(){$(this).addClass("js-hover-once--active")})}};

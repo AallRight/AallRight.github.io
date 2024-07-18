@@ -1,0 +1,815 @@
+
+
+
+var jsDatepicker_event = (function () {
+    // Add 'afterShow' callback to datepicker
+    $.datepicker._updateDatepicker_original = $.datepicker._updateDatepicker;
+    $.datepicker._updateDatepicker = function (inst) {
+        $.datepicker._updateDatepicker_original(inst);
+        var afterShow = this._get(inst, 'afterShow');
+        if (afterShow)
+            afterShow.apply((inst.input ? inst.input[0] : null));  // trigger custom callback
+    }
+
+    var $datepicker_elm,
+        // isHistory = Modernizr.history,
+        isHistory = false,
+        dateSetting = {
+            dateFormat: 'YYYY-MM-DD',
+            beforeShow: function (_elm, _dateObj) {
+            },
+            beforeShowDay: function (_date) {
+                return setDateFunction(_date)
+            },
+            onSelect: function (_dateText, _dateObj) {
+
+            },
+            onChangeMonthYear: function (_year, _month, _obj) {
+                selectMonth(_year, _month, _obj);
+            },
+            afterShow: afterShow,
+            showOtherMonths: false,
+            numberOfMonths: 1,
+            /*GTI change here for dynamic json*/
+            jsonPath: ''
+        },
+        jsonData,
+        holidayData,
+        selectedDay = null,
+        selectedMonth = null,
+        $month__evs__container = null,
+        $arrowSelectBlk,
+        $arrowSelectBlk__arrow,
+        $arrowSelectBlk__select,
+        busy = 0;
+
+    function setup(_settings) {
+        if (_settings !== undefined && _settings !== null) {
+            dateSetting = $.extend({}, dateSetting, _settings, {
+                dayNamesMin: langArg({
+                    'en': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                    'tc': ['日', '一', '二', '三', '四', '五', '六'],
+                    'sc': ['日', '一', '二', '三', '四', '五', '六']
+                }),
+                prevText: langArg({
+                    'en': 'Previus Month',
+                    'tc': '上個月',
+                    'sc': '上个月'
+                }),
+                nextText: langArg({
+                    'en': 'Next Month',
+                    'tc': '下個月',
+                    'sc': '下个月'
+                }),
+                showMonthAfterYear: langArg({
+                    'en': false,
+                    'tc': true,
+                    'sc': true
+                }),
+                monthNames: langArg({
+                    'en': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    'tc': ['年1月', '年2月', '年3月', '年4月', '年5月', '年6月', '年7月', '年8月', '年9月', '年10月', '年11月', '年12月'],
+                    'sc': ['年1月', '年2月', '年3月', '年4月', '年5月', '年6月', '年7月', '年8月', '年9月', '年10月', '年11月', '年12月']
+                }),
+            });
+        }
+
+        $datepicker_elm = $('.js-ev-calendar');
+
+        if (!$datepicker_elm.length) { return }
+
+        $month__evs__container = $('.js-month-ev-container');
+
+        var ajaxPath = dateSetting['jsonPath'];
+
+        $.when(
+            $.ajax({
+                url: ajaxPath,
+                dataType: 'json',
+                beforeSend: function () {
+                    addLoading();
+                    busy++;
+                }
+            }))
+            .done(function (event_date) {
+
+                busy--;
+
+                if (busy !== 0) { return; }
+
+                var globalVariable = { example_attribute: event_date };
+
+                jsonData = event_date['events'];
+
+                var data_list = { event: [] };
+                var today = new Date();
+                var todayDate = today.getFullYear() + '' + ('0' + (today.getMonth() + 1)).slice(-2) + '' + ('0' + today.getDate()).slice(-2);
+
+                $.each(jsonData, function (idx, val) {
+                    //i = i + 1;
+                    var $itm = $(val['content']);
+                    var eid = val["id"];
+                    var datecheckstart = val["start-date"].replace(/-/g, "");
+                    var datecheckend = val["end-date"].replace(/-/g, "");
+                    var datepicker = $('.js-calendar-container').find('.hasDatepicker');
+                    if (todayDate <= datecheckend) {
+                        data_list.event.push(jsonData[parseInt(eid) - 1]);
+                    }
+                });
+
+                if (data_list.event.length != 0) {
+
+                } else {
+                    $('.js-month-ev-container').html('<p class="no-item">' + langArg({
+                        'en': "No results have been found.",
+                        'tc': "找不到相關記錄。",
+                        'sc': "找不到相关资料。"
+                    }) + '</p>');
+                    $('.paginationjs').addClass("hidden");
+                }
+
+                var dateObj = $datepicker_elm.datepicker(dateSetting);
+
+                promptMonth(today.getFullYear() + '/' + ('0' + (today.getMonth() + 1)).slice(-2), dateObj, true);
+                setBgMonth(addZero(today.getMonth() + 1));
+                var datapicker = $('.js-calendar-container').find('.hasDatepicker');
+                if ($('.js-calendar-container').find('.hasDatepicker').length > 0) {
+                    $(document).ready(function () {
+                        firstload = false;
+                        setTimeout(function () { selectcalday() }, 1000);
+                    });
+
+                }
+            })
+
+        $(document).on('click', 'td.has-event a', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+
+
+        // FOR FUTURE: CHANGE POP STATE
+        if (isHistory && dateSetting.selectMonthUpdate) {
+            window.addEventListener("popstate", function (e) {
+                var historyData = e.state;
+
+                if (historyData.split('/').length && historyData.split('/').length < 3) {
+                    historyData = historyData + '/01';
+                }
+
+                $datepicker_elm.datepicker('setDate', historyData);
+
+                if (!historyData) {
+                } else {
+                    promptEvents(historyData);
+                }
+            });
+
+            var dateString, dateData;
+            if (dateSetting['defaultDate'] !== '') {
+                dateString = '/' + dateSetting['defaultDate'].replace(/\/\d+(?!.+)/g, '');
+                dateData = dateSetting['defaultDate'].replace(/\/\d+(?!.+)/g, '');
+            } else {
+                dateString = ''
+                dateData = null;
+            }
+
+            history.replaceState(dateData, null, null);
+        }
+    }
+
+    function addLoading() {
+        if ($month__evs__container.find('.cssload-thecube-wrap').length) { return; }
+        var $loading__cover = $('<div class="cssload-thecube-wrap"> <div class="cssload-thecube ev__loading"> <div class="cssload-cube cssload-c1 theme-color-b4-bg"></div> <div class="cssload-cube cssload-c2 theme-color-b4-bg"></div> <div class="cssload-cube cssload-c4 theme-color-b4-bg"></div> <div class="cssload-cube cssload-c3 theme-color-b4-bg"></div> </div> </div>');
+        $month__evs__container.prepend($loading__cover);
+    }
+
+    function setDateFunction(_date) {
+        var defaultClass = '',
+            showMonth = _date.getMonth() + 1,
+            showDate = _date.getDate(),
+            showYear = _date.getFullYear();
+
+        var inData, inHolday, inSunday, inSuspend;
+
+        inSunday = _date.getDay() == 0;
+
+        if (inSunday) {
+            defaultClass = defaultClass + ' ui-datepicker-sunday'
+        };
+
+
+        return [true, defaultClass + ' date--' + moment(_date).format(dateSetting['dateFormat']) + '--date', ""];
+    }
+
+    function selectMonth(_year, _month, _dateObj) {
+        var data = _year + '/' + addZero(_month);
+        if (isHistory && dateSetting.selectMonthUpdate) {
+            var historyData = data;
+            if (history.state !== data) {
+                history.pushState(historyData, null, dateSetting['eventPagePath'] + '/' + data);
+            }
+        }
+        setBgMonth(addZero(_month));
+        promptMonth(data, _dateObj);
+    }
+
+    function promptMonth(_dateText, _dateObj, _init) {
+
+        $datepicker_elm.closest('.ev').removeClass('js-ev-added');
+
+        if (selectedMonth == _dateText) {
+            return;
+        }
+
+        var minmonth = $('.min-month');
+        if (minmonth.length > 0) {
+            var mm = $('.min-month').html();
+            mm = addZero(mm);
+            var minyear = $('.min-year');
+            if (minyear.length > 0) {
+                var ny = minyear.text();
+                if (ny.length > 0 && mm.toString().length > 0)
+                    var finalmin = ny + "/" + mm;
+                if (new Date(finalmin) >= new Date(_dateText)) {
+
+                    setTimeout(function () {
+                        $('.ui-datepicker-prev').addClass("d-none");
+                    }, 100);
+                } else {
+                    setTimeout(function () {
+                        $('.ui-datepicker-prev').removeClass("d-none");
+
+                    }, 100);
+                }
+
+            }
+
+        }
+
+
+        var dateString = _dateText;
+
+        //var ajaxPath = dateSetting['filterMonthPath'] + '/' + dateString + '/01';
+        // var ajaxPath = '/polyu-mainsite/ajaxcontent/ev_201906.json';
+        var ajaxPath = dateSetting['jsonPath'];
+        if (_init) { } else {
+            ajaxPath += "&date=" + dateString;
+        }
+        selectedMonth = _dateText;
+
+
+        $.ajax({
+            url: ajaxPath,
+            beforeSend: function () {
+                addLoading();
+                busy++;
+            }
+        }).done(function (data) {
+
+            busy--;
+
+            if (busy !== 0) { return; }
+
+            var ev__data = data['events'];
+            jsonData = ev__data;
+            setEventForSelectedMonth(_dateObj);
+            var data_list = { event: [] };
+            $month__evs__container.html('');
+            $.each(ev__data, function (idx, val) {
+                //i = i + 1;
+                var $itm = $(val['content']);
+                var eid = val["id"];
+                var datecheckstart = val["start-date"];
+                var datecheckend = val["end-date"];
+                var datepicker = $('.js-calendar-container').find('.hasDatepicker');
+                var today = new Date();
+                var compare_date = false;
+                if (_init) {
+
+                    //datecheckstart = new Date(val["start-date"]);
+                    //datecheckend = new Date(val["end-date"]);
+                    var target = new Date();
+                    target.setDate(today.getDate() + 30);
+                    var dateChecker = today.getFullYear() + "-" + addZero(today.getMonth() + 1) + "-" + addZero(today.getDate());
+                    var targetChecker = target.getFullYear() + "-" + addZero(target.getMonth() + 1) + "-" + addZero(target.getDate());
+                    //if((today >= datecheckstart || target >= datecheckstart) && today <= datecheckend ) {
+                    if ((dateChecker >= datecheckstart && dateChecker <= datecheckend) ||
+                        (datecheckstart <= targetChecker && datecheckstart >= dateChecker)) {
+                        compare_date = true;
+                    }
+                } else {
+                    if (_dateText.split('/').length < 3) {
+                        _dateText = _dateText + '/01';
+                    }
+					/*
+                    if (new Date(_dateText).getMonth() >= new Date(datecheckstart).getMonth() && new Date(_dateText).getMonth() <= new Date(datecheckend).getMonth()) {
+                        compare_date = true;
+                    }
+					*/
+					/** GTI Fix: 2024 Apr 10, cross year bug fix **/
+					let calDate = new Date(_dateText);
+					let startDate = new Date(datecheckstart);
+					let endDate = new Date(datecheckend);
+					let calChecker = calDate.getYear() + "" + calDate.getMonth();
+					let startChecker = startDate.getYear() + "" + startDate.getMonth();
+					let endChecker = endDate.getYear() + "" + endDate.getMonth();
+					
+					if (calChecker >= startChecker && calChecker <= endChecker) {
+                        compare_date = true;
+                    }
+                }
+				/*
+console.log("date Text: " + _dateText); 
+console.log("date check start: " + datecheckstart); 
+console.log("date check end: " + datecheckend); 
+*/
+
+                if (compare_date == true) {
+                    $month__evs__container.append($itm.addClass('ani-before' + ' ' + 'show'));
+
+                    data_list.event.push(ev__data[parseInt(eid) - 1]);
+                }
+                else {
+                    // $month__evs__container.append($itm.addClass('ani-before' + ' ' + 'hidden'));
+                }
+
+                setTimeout(function () {
+                    $itm.addClass('slideInBottom');
+                }, idx * 80)
+
+
+            });
+
+
+            if (!$datepicker_elm.is('.js-ev-calendar-t2')) {
+                setLegend();
+            };
+
+            if (data_list.event.length != 0) {
+                $('#pagination-container').pagination({
+                    dataSource: data_list.event,
+                    showPrevious: true,
+                    showNext: true,
+                    pageSize: 10,
+                    showGoInput: true,
+                    showGoButton: true,
+                    classPrefix: 'pagination-list__itm',
+                    prevText: langArg({
+                        'en': "Previous",
+                        'tc': "上一頁",
+                        'sc': "上一页"
+                    }),
+                    nextText: langArg({
+                        'en': "Next",
+                        'tc': "下一頁",
+                        'sc': "下一页"
+                    }),
+                    goButtonText: langArg({
+                        'en': "GO",
+                        'tc': "去",
+                        'sc': "去"
+                    }),
+                    jumpToText: langArg({
+                        'en': "Jump To",
+                        'tc': "跳至",
+                        'sc': "跳至"
+                    }),
+                    ulClassName: 'pagination-list',
+                    activeClassName: 'selected',
+                    callback: function (data, pagination) {
+                        var html = simpleTemplating(data);
+                        $('.js-month-ev-container').html(html);
+                        assignpagenum();
+                        hiddenpagenation();
+                    }
+                });
+            } else {
+                $month__evs__container.append('<p class="no-item">' + langArg({
+                    'en': "No results have been found.",
+                    'tc': "找不到相關記錄。",
+                    'sc': "找不到相关资料。"
+                }) + '</p>');
+                $('.paginationjs').addClass("hidden");
+            }
+
+            $datepicker_elm.closest('.ev').addClass('js-ev-added');
+        });
+
+
+        $(document).ready(function () {
+            checkhaspassevent();
+        });
+
+    }
+
+    function setEventForSelectedMonth(_dateObj) {
+        var $ev__itm = $datepicker_elm.find('td.ui-datepicker-unselectable');
+        if ($ev__itm) {
+            var isUpdate = false;
+            $ev__itm.each(function () {
+                var day = $(this).text();
+                if (day.trim() != "") {
+                    var date = new Date(_dateObj.drawYear, _dateObj.drawMonth + 1, day);
+                    var dateStr = date.getFullYear() + "-" + addZero(date.getMonth()) + "-" + addZero(date.getDate());
+                    var elem = $(this);
+                    $.each(jsonData, function (idx, val) {
+                        if (dateStr >= val['start-date'] && dateStr <= val['end-date']) {
+                            $(elem).removeClass("ui-datepicker-unselectable ui-state-disabled ").addClass("has-event ev__tag-" + val['type'].split(' ')[0]);
+                            $(elem).attr("data-handler", "selectDay");
+                            $(elem).attr("data-event", "click");
+                            $(elem).attr("data-month", _dateObj.drawMonth);
+                            $(elem).attr("data-year", _dateObj.drawYear);
+                            if (!isUpdate)
+                                isUpdate = true;
+                        }
+                    });
+                }
+            });
+
+        }
+    }
+
+    function addZero(_number) {
+        return (parseInt(_number) < 10) ? '0' + _number : '' + _number;
+    }
+
+    function afterShow() {
+        var $date__itm = $datepicker_elm.find('td');
+        $date__itm.each(function () {
+            var $di = $(this),
+                c = $di.attr('class'),
+                match = c.match(/date--(.+)--date/),
+                date = null;
+
+            if (match) {
+                $di.attr('data-date', match[1]);
+            }
+        });
+        if (!$datepicker_elm.is('.js-ev-calendar-t2')) {
+            setLegend();
+        }
+    }
+
+    function clearLegend() {
+        var $ev__itm = $datepicker_elm.find('td');
+        $ev__itm.find('.ev__td-legend').remove();
+    }
+
+    function setLegend() {
+        // set legend
+        var $ev__itm = $datepicker_elm.find('td');
+
+        clearLegend();
+
+
+        $ev__itm.each(function () {
+            var $eb = $(this),
+                class_array = [];
+
+            if (typeof $eb.attr('data-date') == 'undefined') { return; }
+
+            $.each(jsonData, function (idx, val) {
+                var isBtw = moment($eb.attr('data-date')).isBetween(val['start-date'], val['end-date'], null, '[]');
+                if (isBtw) {
+                    var type = val['csscode'].toLowerCase().split(/\s+/)[0];
+
+                    if ($.inArray(type, class_array) < 0) {
+                        class_array.push(type);
+                    }
+                }
+            });
+
+
+            if (class_array.length) {
+                var $legend__in__td = $('<div class="ev__td-legend td-legend-list"/>');
+                $.each(class_array, function (idx, val) {
+                    $legend__in__td.append('<div class="td-legend-list__itm td-legend-list__itm--' + val + '"/>');
+                });
+
+                $legend__in__td.appendTo($eb);
+
+                $eb.find('span').replaceWith(function () {
+                    var $elm = $('<a />', { html: $(this).html(), href: "javascript:void(0)", class: $(this).attr('class') })
+                    $elm.on('click', function (e) { e.stopPropagation(); e.preventDefault(); })
+                    return $elm;
+                })
+
+            } else {
+                $eb.find('a').replaceWith(function () {
+                    var $elm = $('<span />', { html: $(this).html(), class: $(this).attr('class') })
+                    $elm.on('click', function (e) { e.stopPropagation(); e.preventDefault(); })
+                    return $elm;
+                })
+            }
+        });
+
+        selectcalday();
+    }
+
+    function setArrowDateBlkFn() {
+        $arrowSelectBlk = $('.js-date-select-arrow');
+
+        if (!$arrowSelectBlk.length) { return; }
+
+        $arrowSelectBlk__arrow = $arrowSelectBlk.find('.js-date-select-arrow__arrow');
+        $arrowSelectBlk__select = $arrowSelectBlk.find('select');
+
+        $arrowSelectBlk__select.on('change', function () {
+            var $select = $(this),
+                selected__value = $select.find('option').eq($select[0].selectedIndex).val();
+
+
+            $datepicker_elm.datepicker('setDate', moment(selected__value, dateSetting['dateFormat']).toDate());
+        })
+
+        $arrowSelectBlk__arrow.on('click', function (e) {
+            e.preventDefault();
+            var $arrow = $(this);
+            var dir = $arrow.data('dir');
+
+            if (dir == 'prev') {
+                $datepicker_elm.find('[data-handler="prev"]').trigger('click');
+            } else {
+                $datepicker_elm.find('[data-handler="next"]').trigger('click');
+            }
+        })
+    }
+
+    function updateSelectBox(__year, __month, __obj) {
+
+        var i__date = new_date = month__label = null;
+
+        var year = month = date = null;
+
+        if (__year && __month && __obj) {
+            year = __year;
+            month = __month;
+            date = 1;
+        } else {
+            var date_obj = new Date();
+            year = date_obj.getFullYear();
+            month = date_obj.getMonth() + 1;
+            date = 1;
+
+        }
+
+        $arrowSelectBlk__select.find('option').remove();
+
+        for (var i = -6; i < 5; i++) {
+
+            i__date = moment([year, month - 1, date]).add(i, 'months');
+
+            new_date = i__date.year() + '-' + addZero(i__date.month() + 1) + '-' + addZero(i__date.date());
+            isCurrent = i__date.month() + 1 == month;
+
+            month__label = (function () {
+                if (getLang() == 'en') {
+                    return $datepicker_elm.datepicker("option", "monthNames")[i__date.month()] + ' ' + i__date.year();
+                } else {
+                    return i__date.year() + ' ' + $datepicker_elm.datepicker("option", "monthNames")[i__date.month()];
+                }
+            }())
+
+            $arrowSelectBlk__select.append('<option value="' + new_date + '"' + ((isCurrent) ? ' selected' : '') + '>' + month__label + '</option>');
+
+            if ($arrowSelectBlk__select.parent().is('.multiselect-native-select')) {
+                jsSelectBox.reBuild($arrowSelectBlk__select);
+            }
+
+            // $arrowSelectBlk__select.append('')
+        }
+    }
+    function inRange(x, min, max) {
+        return ((x - min) * (x - max) <= 0);
+    }
+    function getMonth(monthStr) {
+        return new Date(monthStr + '-1-01').getMonth() + 1
+    }
+    function selectcalday() {
+        $('.hasDatepicker').find('a:not(.ui-corner-all)').on('click', (function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $this = $(this);
+            var selectday = $this.html();
+            if (selectday.toString().length == 1) {
+                selectday = "0" + selectday;
+            }
+            var selectmonth = parseInt($(this).parent().attr("data-month")) + 1;
+            if (selectmonth.toString().length == 1) {
+                selectmonth = "0" + selectmonth;
+            }
+            var selectyear = $(this).parent().attr("data-year");
+            var selectdate = selectyear + selectmonth + selectday;
+
+            var today = new Date();
+            var a = today.getFullYear().toString();
+            var b = today.getDate();
+            var c = today.getMonth() + 1;
+            if (b.toString().length == 1) {
+                b = "0" + b;
+
+            }
+            if (c.toString().length == 1) {
+                c = "0" + c;
+            }
+
+            var todate = a + c + b;
+
+            updateTitleText(todate > selectdate);
+
+            var ajaxPath = dateSetting['jsonPath'];
+            ajaxPath += "&date=" + selectyear + "/" + selectmonth + "/" + selectday;
+
+
+            $.ajax({
+                url: ajaxPath,
+                beforeSend: function () {
+                    addLoading();
+                    busy++;
+                }
+            }).done(function (data) {
+
+                busy--;
+
+                if (busy !== 0) { return; }
+
+                var ev__data = data['events'];
+                var data_list = { event: [] };
+
+                $month__evs__container.html('');
+                $.each(ev__data, function (idx, val) {
+
+                    //i = i + 1;
+                    var $itm = $(val['content']);
+                    var eid = val["id"];
+                    var datecheckstart = val["start-date"].replace("-", "").replace("-", "");
+                    var datecheckend = val["end-date"].replace("-", "").replace("-", "");
+                    var datepicker = $('.js-calendar-container').find('.hasDatepicker');
+                    if (inRange(selectdate, datecheckstart, datecheckend)) {
+                        $month__evs__container.append($itm.addClass('ani-before' + ' ' + 'show'));
+                        data_list.event.push(ev__data[parseInt(eid) - 1]);
+                    }
+                    else {
+                        // $month__evs__container.append($itm.addClass('ani-before' + ' ' + 'hidden'));
+                    }
+                    if (data_list.event.length != 0) {
+                        $('#pagination-container').pagination({
+                            dataSource: data_list.event,
+                            showPrevious: true,
+                            showNext: true,
+                            pageSize: 10,
+                            showGoInput: true,
+                            showGoButton: true,
+                            classPrefix: 'pagination-list__itm',
+                            prevText: langArg({
+                                'en': "Previous",
+                                'tc': "上一頁",
+                                'sc': "上一页"
+                            }),
+                            nextText: langArg({
+                                'en': "Next",
+                                'tc': "下一頁",
+                                'sc': "下一页"
+                            }),
+                            goButtonText: langArg({
+                                'en': "GO",
+                                'tc': "去",
+                                'sc': "去"
+                            }),
+                            jumpToText: langArg({
+                                'en': "Jump To",
+                                'tc': "跳至",
+                                'sc': "跳至"
+                            }),
+                            ulClassName: 'pagination-list',
+                            activeClassName: 'selected',
+                            callback: function (data, pagination) {
+                                var html = simpleTemplating(data);
+                                $('.js-month-ev-container').html(html);
+                                //assignpagenum();
+                                $('.pagination-page__input').val(1);
+                                hiddenpagenation();
+                            }
+                        });
+                    } else {
+                        $month__evs__container.html('<p class="no-item">' + langArg({
+                            'en': "No results have been found.",
+                            'tc': "找不到相關記錄。",
+                            'sc': "找不到相关资料。"
+                        }) + '</p>');
+                        $('.paginationjs').addClass("hidden");
+                    }
+                })
+
+            })
+        }))
+    }
+
+    function getMonth(monthStr) {
+        return new Date(monthStr + '-1-01').getMonth() + 1
+    }
+    function assignpagenum() {
+        //assign the page number in jump to
+        var selected_pagenum = $('.pagination-list .selected').attr("data-num");
+        //$('.pagination-page__input').val(selected_pagenum);
+        checklength = $('.pagination-list__itm--number').length;
+        if (checklength > 1) {
+            var selected = parseInt(selected_pagenum);
+            if ((selected + 1) <= checklength)
+                selected = selected + 1;
+            else if ((selected - 1) > 0)
+                selected = selected - 1;
+
+            $('.pagination-page__input').val(selected);
+        }
+    }
+    function hiddenpagenation() {
+        checklength = $('.pagination-list__itm--number').length;
+        if (checklength == 1) {
+            $('.paginationjs').addClass("hidden");
+            $('.ev__content-side').css("flex", "0.94");
+        }
+        else {
+            $('.ev__content-side').css("flex", "0.94");
+        }
+
+        UpdateEvDateDisplay();
+    }
+    function checkhaspassevent() {
+        var today = new Date();
+        var today_m = today.getMonth() + 1;
+        if (today_m.toString().length == 1) {
+            today_m = 0 + today_m.toString();
+        }
+        var today_y = today.getFullYear();
+        var today_y_m = today_y + today_m;
+        var cal_y = $('.ui-datepicker-year').text();
+        var cal_m = $('.ui-datepicker-month').text();
+        if (cal_m.indexOf('年') !== -1 || cal_m.indexOf('月') !== -1) {
+            cal_m = cal_m.replace('年', '').replace('月', '');
+        } else {
+            cal_m = getMonthIndex(cal_m);
+        }
+        if (cal_m.toString().length == 1) {
+            cal_m = 0 + cal_m.toString();
+        }
+        var cal_ym = cal_y + cal_m;
+        updateTitleText(today_y_m > cal_ym);
+    }
+
+    function updateTitleText(__boolean) {
+        if (__boolean) {
+            $('.has-margin-bottom').text(langArg({
+                'en': "Past Events",
+                'tc': "過往活動",
+                'sc': "过往活动"
+            }));
+        }
+        else {
+            $('.has-margin-bottom').text(langArg({
+                'en': "Upcoming Events",
+                'tc': "最新活動",
+                'sc': "最新活动"
+            }));
+        }
+    }
+
+    function getMonthIndex(MonthName) {
+        var months = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+        ];
+
+        return months.indexOf(MonthName) + 1; 
+    }
+
+    function setBgMonth(__month) {
+
+        if (!$datepicker_elm.is('.js-ev-calendar-t2')) {
+            return;
+        };
+
+        var $prev__month = $datepicker_elm.find('.js-ev-calendar-bg-month');
+        if (!$prev__month.length) {
+            $datepicker_elm.append('<p class="js-ev-calendar-bg-month" aria-hidden="true">' + __month + '</p>');
+        } else {
+            $prev__month.html(__month);
+        }
+    }
+
+    return {
+        init: setup
+    };
+}());
+

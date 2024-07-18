@@ -1,0 +1,1 @@
+var cancelMouseFocusOutline={init:function(){var e=$("body");e.addClass("mouse-down-remove-outline"),$(document).on("mousedown.cancel-outline",function(o){e.addClass("mouse-down-remove-outline")}).on("keydown.cancel-outline",function(o){9==o.which&&e.removeClass("mouse-down-remove-outline")})}};

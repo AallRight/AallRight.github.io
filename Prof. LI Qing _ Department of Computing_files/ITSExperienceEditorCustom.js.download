@@ -1,0 +1,29 @@
+$( document ).ready(function() {
+	//for SD011A map to show coordinate of point in experience editor 
+   $(".wmap__inner.wmap-ee-mode").mousemove(function(e){
+	   var containerWidth = $(this).width();
+	   var containerHeight = $(this).height();
+	   var containerOffset =$(this).offset(); 
+	   //or $(this).offset(); if you really just want the current element's offset
+	   var relX = e.pageX - containerOffset.left;
+	   var relY = e.pageY - containerOffset.top;
+	   
+	   var topPersent = (relY / containerHeight * 100).toFixed(2);
+	   var leftPersent = (relX / containerWidth * 100).toFixed(2);
+	   
+	   $(this).find(".EE-wmap-current-position" ).css({left:relX+10, top:relY-10, right:"auto"}).text("X: "+leftPersent+", Y: "+topPersent);
+	});
+	
+	//To add Video Guide for Component subItem Type
+	$(".ITS_Collection_User_Guide_Normal").append('<p><br /><br /><a href="https://polyuit-my.sharepoint.com/:v:/g/personal/itewcms_polyu_edu_hk/ESDDqK2Q-0hBurwmDf6wWvoB7frze1NQxYSFHHcgFRFRsQ?e=BHUQOo" target="_blank" style="border:dashed 5px green;padding:15px;margin:10px;"><strong>Video Guide of SubItem Type Component (Click here to Open in New Window)</a><br /><br /><p>');
+	$("#ITS_EmailListForApprovalButton").click(function() { $("#ITS_EmailListForApproval").show(); });
+	
+	//For General Listing Table item Row clickable //
+    $(".ITS_clickableTableRow").click(function () {
+        if ($(this).data("target") == "_blank") {
+            window.open($(this).data("href"), $(this).data("target"));
+        } else {
+            window.location = $(this).data("href");
+        }
+    });		
+});

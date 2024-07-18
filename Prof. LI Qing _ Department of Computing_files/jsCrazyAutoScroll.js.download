@@ -1,0 +1,1 @@
+var jsCrazyAutoScroll={init:function(){var o,n=$(".crazy-banner"),r=!1,c=$(window).scrollTop();!n||0!=c||null!=(o=n.data("auto-scroll"))&&($(window).on("scroll.crazy",function(){r=!0}),setTimeout(function(){r||$(".crazy-banner__scroll-down").click(),$(window).off("scroll.crazy")},parseInt(o)))}};

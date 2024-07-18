@@ -1,0 +1,1 @@
+var jsRadioTabSwitch={init:function(){$(".js-radio-tab-switch").each(function(){var a=$(this),t=a.find('.js-radio-tab-switch-radio-wrap input[type="radio"]'),i=a.find(".js-radio-tab-switch-tab");t.on("change.jsradiotab",function(a){a.preventDefault();var t=$(this);i.removeClass("active show"),$("#"+t.attr("value")).tab("show")})})}};

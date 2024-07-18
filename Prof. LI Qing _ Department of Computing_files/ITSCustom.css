@@ -1,0 +1,111 @@
+.warningNoComponentSource{
+	display:none;
+}
+
+/*temp fix of non-acad home news*/
+.video-main-list .main-blk-side-grid__inner .main-blk-side-grid__main .video-wrapper img{
+	width:100%;
+}
+
+#yfindblockcontent {
+	height:1px;
+	overflow:auto;
+	width:1px;
+}
+
+.yfindblockcontent {
+	height:1px;
+	overflow:auto;
+	width:1px;
+}
+
+.yfcontent {
+	height:1px!important;
+	overflow:auto;
+	background:0 0;
+	line-height:30px;
+}
+
+.yfcontent::-webkit-scrollbar {
+	width:15px;
+	background-color:#fff;
+}
+
+.yfcontent::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+.yfcontent::-webkit-scrollbar-thumb {
+	background-color:#fff;
+}
+
+.yfcontent::-webkit-scrollbar-button {
+	background-color:#fff;
+}
+
+.yfcontent::-webkit-scrollbar-corner {
+	background-color:#fff;
+}
+
+.yfcontent * {
+	position:relative!important;
+}
+
+.yfcontent *:first-child {
+	padding-top:30px;
+}
+
+/*adjust the spacing at right side of OL, to prevent some Italic word being cropped at the end */
+.static-content ol > li{
+	padding-right:0.25em;
+}
+
+/*Custom text box for photo wall listing*/
+.jc-gallery .custom-title{
+	position:absolute;
+	bottom:0;
+	padding:5px 15px;
+	background:rgba(160,35,55,.85);
+	color:#FFF;
+	font-size:1em;
+}
+@media (max-width: 768px) {
+    .jc-gallery .custom-title{
+		padding:3px 10px;
+		font-size:12px;
+		max-height:36px;
+    }
+	.static-table--responsive>tbody>tr:nth-child(even)>td p.static-table__mob-title{
+		color:#454545 !important;
+	}
+}
+
+/*Style for custom light box*/
+.ITS_Content_CustomLightBox.prod{
+	display:none !important;
+}
+.custom-lightbox__body_its {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    pointer-events: auto;
+}
+/*EOF Style for custom light box*/
+
+/*hover OPUS button*/
+.ppl-detail .skew-btn--tail-title .skew-btn__tail{
+	transform: translate(0,0) !important;
+}

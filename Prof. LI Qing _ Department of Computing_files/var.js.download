@@ -1,0 +1,1 @@
+var cssTransEnd="webkitTransitionEnd transitionend ",cssAniEnd="animationend webkitAnimationEnd";

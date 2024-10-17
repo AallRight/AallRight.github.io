@@ -1,36 +1,71 @@
-p,
-h1 {
-  color: red;
-  width: 500px;
-  border: 1px solid black;
-}
-ul {
-  color: #36c536;
-}
-a:hover{
-  color: red;
-}
-html {
-  background-color: #83abd1;
-}
-body{
-  width: 600px;
-  margin: 100 auto;
-  background-color: #ff95f3;
-  padding: 0 20px 20px 20px;
-  border: 5px solid black;
-
-}
-h1 {
-  margin: 0;
-  padding: 20px 0;
-  color: #00539f;
-  text-shadow: 3px 3px 1px black;
-}
-img {
-  display: block;
-  margin: 1 auto;
-  border: 6px #34f334;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
 }
 
-/* 前面的是selector就是某个类别的style */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 1rem;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-top: 1rem;
+}
+
+section {
+    padding: 2rem;
+    background-color: #fff;
+    margin: 2rem auto;
+    max-width: 800px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #333;
+    color: #fff;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label, input, textarea {
+    margin-bottom: 1rem;
+}
+
+button {
+    padding: 0.5rem;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555;
+}

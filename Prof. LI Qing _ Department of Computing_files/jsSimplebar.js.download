@@ -1,1 +1,0 @@
-var jsSimplebar={init:function(){var e=$(".js-simplebar");!e.length||detectIE()<12&&0<detectIE()||e.each(function(){var e=$(this);new SimpleBar(e[0])})}};

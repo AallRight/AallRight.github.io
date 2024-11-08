@@ -1,1 +1,0 @@
-function ckSTab(c){return 9==c.which&&c.shiftKey}function ckTab(c){return 9==c.which&&!c.shiftKey}function ckEsc(c){return 27==c.which&&!c.shiftKey}

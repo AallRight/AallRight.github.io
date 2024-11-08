@@ -1,1 +1,0 @@
-var skip2content=function(){var t,n;return{init:function(){t=$("#skip-to-content"),n=$("#skip-start"),t.on("click",function(t){t.preventDefault(),n.focus(),$("html, body").scrollTop(n.offset().top)})}}}();

@@ -1,1 +1,0 @@
-var jsAnchorPosition=function(){var o=null;return{init:function(){var n=$(".js-anchor");$(window).on("resize scroll load",function(){o&&(clearTimeout(o),o=null),o=setTimeout(function(){!function(n,o){{var i;o.length&&(i=o.outerHeight(),n.each(function(){$(this).css("top",-i)}))}}(n,$(".js-anchor-fixed"))},100)})}}}();

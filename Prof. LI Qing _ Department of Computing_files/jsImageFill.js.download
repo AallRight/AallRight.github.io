@@ -1,1 +1,0 @@
-var jsImageFill={init:function(){Modernizr.objectfit||$(".js-imagefill").imagefill()}};

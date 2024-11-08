@@ -1,1 +1,0 @@
-function getLang(){var n=$("body"),a=n.hasClass("lang-en")?"en":n.hasClass("lang-tc")?"tc":n.hasClass("lang-sc")?"sc":"en";return a}function langArg(n){return n[getLang()]}

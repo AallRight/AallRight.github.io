@@ -1,1 +1,0 @@
-var jsSticky={init:function(){$(".js-sticky").each(function(){var t=$(this);$(".filter-sticky").length&&t.hasClass("character-blk__character")&&t.attr("data-margin-top",$(".filter-sticky").outerHeight())}),new Sticky(".js-sticky")}};

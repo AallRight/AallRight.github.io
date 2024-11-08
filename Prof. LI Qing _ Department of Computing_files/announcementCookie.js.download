@@ -1,1 +1,0 @@
-function getCookieOfAnnouncement(){var e=document.documentElement,n=$("#spa-blk").data("spa-dept"),o=Cookies.get("is_closed_announcement"),t=null==o?o:JSON.parse(o);Array.isArray(t)&&-1!=t.indexOf(n)||e.classList.add("is-opened-announcement")}getCookieOfAnnouncement();

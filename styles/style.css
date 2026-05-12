@@ -187,7 +187,8 @@ h1, h2, h3, h4 {
   padding-top: calc(var(--nav-height) + var(--space-3xl));
   padding-bottom: var(--space-3xl);
   text-align: center;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.85) 0%, rgba(22, 33, 62, 0.8) 50%, rgba(15, 52, 96, 0.75) 100%),
+              url('../images/hero-bg.jpg') center/cover no-repeat;
   color: #fff;
   position: relative;
   overflow: hidden;

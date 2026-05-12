@@ -1,36 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Webpage</title>
+    <title>Notes | ZHU Xiangnan</title>
+    <meta name="description" content="Study notes and articles by ZHU Xiangnan on computer vision, deep learning, and more.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="icon" href="images/profile.jpg" type="image/jpeg">
 </head>
 <body>
-    <header>
-        <img src="images/profile.jpg" alt="Profile Picture" class="profile-pic">
-        <h1>Welcome to My Personal Webpage</h1>
-        <nav>
-            <ul>
-                <li><a href="https://aallright.github.io/#about">About Me</a></li>
-                <li><a href="https://aallright.github.io/#projects">Projects</a></li>
-                <li><a href="https://aallright.github.io/#contact">Contact</a></li>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-brand">
+                <img src="images/profile.jpg" alt="ZHU Xiangnan">
+                <span>ZHU Xiangnan</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="notes.html" class="active">Notes</a></li>
+                <li><a href="study.html">Study</a></li>
             </ul>
-        </nav>
-    </header>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
 
-
-    <section id="notes list">
-        <h2>Notes List</h2>
-        <ul>
-            <li>笔记合集: <a href="https://github.com/AallRight/Notes?tab=readme-ov-file#%E7%AC%94%E8%AE%B0">笔记链接</a></li>
-            <li>Diffusion Models: <a href="https://aallright.github.io/notes/ai/diffusion%20models/Diffusion%20Models：生成扩散模型.html">笔记链接</a></li>
-        </ul>
+    <!-- Header -->
+    <section class="hero" style="padding-bottom: var(--space-2xl);">
+        <div class="hero-content">
+            <h1 style="font-size: 2rem;">Notes & Articles</h1>
+            <p class="subtitle">My study notes, articles, and learning resources.</p>
+        </div>
     </section>
 
+    <!-- Notes List -->
+    <section class="section">
+        <div class="section-inner fade-in">
+            <h2 class="section-title">Recent Notes</h2>
+            <p class="section-subtitle">A collection of my study materials and technical writings.</p>
+            <div class="note-list">
+                <a href="https://github.com/AallRight/Notes?tab=readme-ov-file#%E7%AC%94%E8%AE%B0" target="_blank" class="note-item">
+                    <div class="note-item-icon">&#x1F4DA;</div>
+                    <div class="note-item-content">
+                        <div class="note-item-title">Notes Collection (GitHub)</div>
+                        <div class="note-item-desc">A comprehensive repository of my study notes covering various CS topics.</div>
+                    </div>
+                    <div class="note-item-meta">Repository</div>
+                </a>
+                <a href="notes/ai/diffusion%20models/Diffusion%20Models%EF%BC%9A%E7%94%9F%E6%88%90%E6%89%A9%E6%95%A3%E6%A8%A1%E5%9E%8B.html" class="note-item">
+                    <div class="note-item-icon">&#x1F4A1;</div>
+                    <div class="note-item-content">
+                        <div class="note-item-title">Diffusion Models: Generative Diffusion Models</div>
+                        <div class="note-item-desc">A detailed tutorial on diffusion models - theory, math, and implementation of generative diffusion processes.</div>
+                    </div>
+                    <div class="note-item-meta">AI / Deep Learning</div>
+                </a>
+            </div>
+        </div>
+    </section>
 
-
-    <footer>
+    <!-- Footer -->
+    <footer class="footer">
         <p>&copy; 2024 Aallright. All rights reserved.</p>
     </footer>
 

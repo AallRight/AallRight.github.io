@@ -1,64 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Webpage</title>
+    <title>ZHU Xiangnan | Personal Homepage</title>
+    <meta name="description" content="ZHU Xiangnan (朱湘南) - Computer Science undergraduate at Shanghai Jiao Tong University, interested in computer vision.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="icon" href="images/profile.jpg" type="image/jpeg">
 </head>
 <body>
-    <header>
-        <img src="images/profile.jpg" alt="Profile Picture" class="profile-pic">
-        <h1>Welcome to My Personal Webpage</h1>
-        <nav>
-            <ul>
-                <li><a href="#about">About Me</a></li>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-brand">
+                <img src="images/profile.jpg" alt="ZHU Xiangnan">
+                <span>ZHU Xiangnan</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about" class="active">About</a></li>
                 <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="study.html">Study</a></li>
             </ul>
-        </nav>
-    </header>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
 
-    <section id="about">
-        <h2>About Me</h2>
-        <p>Hello! I am ZHU Xiangnan(朱湘南), major in computer science.</p>
-        <a href="files/resume.pdf" target="_blank">Download My Resume</a>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <img src="images/profile.jpg" alt="ZHU Xiangnan" class="hero-profile">
+            <h1>ZHU Xiangnan</h1>
+            <p class="subtitle">Computer Science @ Shanghai Jiao Tong University</p>
+            <div class="hero-actions">
+                <a href="files/resume2.pdf" target="_blank" class="btn btn-primary">Download Resume</a>
+                <a href="https://github.com/AallRight" target="_blank" class="btn btn-outline">GitHub</a>
+            </div>
+        </div>
     </section>
 
-    <section id="projects">
-        <h2>Projects</h2>
-        <ul>
-            <li>网页功能插件: <a href="https://github.com/AallRight/chigua2.0">Project Link</a></li>
-            <li>文件系统模拟: <a href="https://github.com/AallRight/fsdeparted">Project Link</a></li>
-            <li>Project 3: <a href="#">Project Link</a></li>
-        </ul>
+    <!-- About -->
+    <section class="section" id="about">
+        <div class="section-inner fade-in">
+            <h2 class="section-title">About Me</h2>
+            <p class="section-subtitle">A brief introduction about myself.</p>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Hello! I am <strong>ZHU Xiangnan (朱湘南)</strong>, an undergraduate student majoring in Computer Science at <strong>Shanghai Jiao Tong University</strong>.</p>
+                    <p>I am passionate about <strong>computer vision</strong> and exploring the intersection of deep learning and visual understanding. My research interests include diffusion models, generative AI, and their practical applications.</p>
+                </div>
+                <div class="about-highlights">
+                    <div class="highlight-item">
+                        <div class="label">University</div>
+                        <div class="value">Shanghai Jiao Tong</div>
+                    </div>
+                    <div class="highlight-item">
+                        <div class="label">Major</div>
+                        <div class="value">Computer Science</div>
+                    </div>
+                    <div class="highlight-item">
+                        <div class="label">Interest</div>
+                        <div class="value">Computer Vision</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section id="links">
-        <h2>Links</h2>
-        <ul>
-            <li>笔记: <a href="https://aallright.github.io/notes.html">笔记链接</a></li>
-            <li>网页功能插件: <a href="https://github.com/AallRight/chigua2.0">Project Link</a></li>
-        </ul>
+    <!-- Projects -->
+    <section class="section" id="projects" style="background: #fff;">
+        <div class="section-inner fade-in">
+            <h2 class="section-title">Projects</h2>
+            <p class="section-subtitle">Selected works and experiments.</p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">&#x1F9E9;</div>
+                    <h3 class="card-title">chigua2.0</h3>
+                    <p class="card-desc">A browser extension plugin that enhances web page functionality with custom features.</p>
+                    <div class="card-tags">
+                        <span class="tag">Browser Extension</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+                    <a href="https://github.com/AallRight/chigua2.0" target="_blank" class="card-link">View on GitHub</a>
+                </div>
+                <div class="card">
+                    <div class="card-icon">&#x1F4C1;</div>
+                    <h3 class="card-title">fsdeparted</h3>
+                    <p class="card-desc">A file system simulation project that models and demonstrates core file system operations and structures.</p>
+                    <div class="card-tags">
+                        <span class="tag">File System</span>
+                        <span class="tag">Simulation</span>
+                    </div>
+                    <a href="https://github.com/AallRight/fsdeparted" target="_blank" class="card-link">View on GitHub</a>
+                </div>
+            </div>
+        </div>
     </section>
 
-<!--     <section id="contact">
-        <h2>Contact</h2>
-        <form>
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-            
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" required></textarea>
-
-            <button type="submit">Send Message</button>
-        </form>
-    </section> -->
-
-    <footer>
+    <!-- Footer -->
+    <footer class="footer">
         <p>&copy; 2024 Aallright. All rights reserved.</p>
     </footer>
 

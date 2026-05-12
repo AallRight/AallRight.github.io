@@ -1,32 +1,86 @@
-<!doctype html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>My test page</title>
-    <link href="styles/style.css" rel="stylesheet" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Open+Sans"
-      rel="stylesheet" />
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study | ZHU Xiangnan</title>
+    <meta name="description" content="Academic background and coursework by ZHU Xiangnan at Shanghai Jiao Tong University.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="icon" href="images/profile.jpg" type="image/jpeg">
+</head>
+<body>
 
-  </head>
-  <body>
-    <!-- <link href="styles/style.css" rel="stylesheet" /> -->
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-brand">
+                <img src="images/profile.jpg" alt="ZHU Xiangnan">
+                <span>ZHU Xiangnan</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="study.html" class="active">Study</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
 
-    <!-- <title>My test page</title> -->
-    <h1>学习课程</h1>
-    <h2>Courses</h2>
-<!--     <p>My cat is <strong>very</strong> grumpy.</p> -->
-<!--     <ul>
-      <li>technologies</li>
-      <li>thinkers</li>
-      <li>builders</li>
-    </ul> -->
-    <li>undergraduate of Shanghai Jiao Tong University</li>
-    <li>interested in computer vision</li>
-<!--     <li>builders</li> -->
-    <!-- <img src="images/IMG_9588.jpg" alt="My test image" /> -->
-    <a href="index.html">Home Page</a>
-<!--     <img src="images/IMG_9588.jpg" alt="My test image" /> -->
-  </body>
+    <!-- Header -->
+    <section class="hero" style="padding-bottom: var(--space-2xl);">
+        <div class="hero-content">
+            <h1 style="font-size: 2rem;">Study & Courses</h1>
+            <p class="subtitle">My academic journey and coursework at SJTU.</p>
+        </div>
+    </section>
+
+    <!-- Study Content -->
+    <section class="section">
+        <div class="section-inner fade-in">
+            <h2 class="section-title">Academic Background</h2>
+            <p class="section-subtitle">Undergraduate studies and research interests.</p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">&#x1F393;</div>
+                    <h3 class="card-title">Shanghai Jiao Tong University</h3>
+                    <p class="card-desc">Undergraduate student in Computer Science, one of China's top universities. Focused on building a strong foundation in algorithms, systems, and AI.</p>
+                    <div class="card-tags">
+                        <span class="tag">Computer Science</span>
+                        <span class="tag">Undergraduate</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">&#x1F916;</div>
+                    <h3 class="card-title">Computer Vision</h3>
+                    <p class="card-desc">Particularly interested in computer vision and its applications. Exploring areas such as image recognition, object detection, and generative models.</p>
+                    <div class="card-tags">
+                        <span class="tag">Deep Learning</span>
+                        <span class="tag">CV</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">&#x1F4D6;</div>
+                    <h3 class="card-title">Continuous Learning</h3>
+                    <p class="card-desc">Always exploring new topics in AI and software engineering. Check out my notes page for detailed study materials and technical writings.</p>
+                    <a href="notes.html" class="card-link">View Notes</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Aallright. All rights reserved.</p>
+    </footer>
+
+    <script src="scripts/main.js"></script>
+</body>
 </html>
